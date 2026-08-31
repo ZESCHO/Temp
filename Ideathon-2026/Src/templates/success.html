@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>{{ title }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="logo">
+            🤖 Secure Agentic-AI Platform
+        </div>
+
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/requests">My Requests</a>
+            {% if can_do("approve_requests") %}
+            <a href="/approval">Approvals</a>
+            <a href="/execution">Execution</a>
+            <a href="/audit">Audit Trail</a>
+            {% endif %}
+        </nav>
+
+    </header>
+
+
+    <main class="container">
+
+        <section class="hero">
+
+            <h1>{{ title }}</h1>
+
+            <p>{{ message }}</p>
+
+        </section>
+
+
+        {% if error %}
+        <section class="info-card policy-blocked">
+
+            <h2>🛡️ Blocked</h2>
+
+            <p><strong>Reason:</strong> {{ error }}</p>
+
+            <p>
+                No institutional records were created or changed.
+            </p>
+
+        </section>
+        {% endif %}
+
+
+        {% if steps %}
+        <section class="info-card">
+
+            <h2>🧭 Workflow Steps</h2>
+
+            <ol class="workflow-steps">
+
+                {% for step in steps %}
+                <li class="workflow-step step-{{ step.status|lower }}">
+
+                    <div class="workflow-step-head">
+
+                        <span class="step-status">
+                            {% if step.status == "DONE" %}✅
+                            {% elif step.status == "SATISFIED" %}👤
+                            {% elif step.status == "ROLLED_BACK" %}↩️
+                            {% else %}➖{% endif %}
+                        </span>
+
+                        <span class="step-summary">{{ step.summary }}</span>
+
+                    </div>
+
+                    {% if step.detail %}
+                    <dl class="step-detail">
+                        {% for key, value in step.detail.items() %}
+                        <dt>{{ key }}</dt>
+                        <dd>{{ value }}</dd>
+                        {% endfor %}
+                    </dl>
+                    {% endif %}
+
+                </li>
+                {% endfor %}
+
+            </ol>
+
+        </section>
+        {% endif %}
+
+
+        <section class="info-card">
+
+            <h2>📋 Request Status</h2>
+
+            <p>
+                <strong>Status:</strong>
+                {{ status_label or "Pending Human Approval" }}
+            </p>
+
+            {% if request_id %}
+            <p>
+                <strong>Request:</strong> #{{ request_id }}
+            </p>
+            {% endif %}
+
+            <p>
+                Every action above is recorded in the audit trail.
+                Consequential actions require human approval before
+                they are carried out.
+            </p>
+
+            <br>
+
+            <a href="/">
+                <button type="button">
+                    ← Back to Dashboard
+                </button>
+            </a>
+
+        </section>
+
+    </main>
+
+</body>
+
+</html>
