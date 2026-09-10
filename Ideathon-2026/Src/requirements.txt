@@ -1,7 +1,0 @@
-Flask
-python-dotenv
-Flask-SQLAlchemy
-Flask-Login
-Flask-JWT-Extended
-Werkzeug
-requests
